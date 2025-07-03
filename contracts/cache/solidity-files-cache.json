@@ -762,6 +762,45 @@
         "^0.8.20"
       ],
       "artifacts": []
+    },
+    "D:\\Projects\\NadGarden\\contracts\\contracts\\NadMarketplace.sol": {
+      "lastModificationDate": 1240428288000,
+      "contentHash": "88124a255b18059bb2bb8ceb9f1cf011",
+      "sourceName": "contracts/NadMarketplace.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC721/IERC721.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "NadMarketplace"
+      ]
     }
   }
 }

@@ -4,6 +4,7 @@ const admin = require('firebase-admin');
 const pinataSDK = require('@pinata/sdk');
 const multer = require('multer');
 const path = require('path');
+const { Readable } = require('stream');
 require('dotenv').config({ path: '../.env' });
 
 // Initialize Firebase Admin SDK for RTDB
@@ -33,7 +34,9 @@ async function uploadImageToPinata(file) {
     const options = {
       pinataMetadata: { name: file.originalname }
     };
-    const result = await pinata.pinFileToIPFS(file.buffer, options);
+    const readableStreamForFile = Readable.from(file.buffer);
+    readableStreamForFile.name = file.originalname; // Pinata SDK expects a name property
+    const result = await pinata.pinFileToIPFS(readableStreamForFile, options);
     return `ipfs://${result.IpfsHash}`;
   } catch (err) {
     console.error('Pinata image upload failed:', err);
@@ -115,14 +118,21 @@ app.get('/collections/:creatorWallet', async (req, res) => {
 // POST /upload-nft (image + metadata)
 app.post('/upload-nft', upload.single('image'), async (req, res) => {
   try {
+    console.log('Received /upload-nft request.');
+    console.log('Request body:', req.body);
+    console.log('Request file:', req.file);
+
     const { name, description, creatorWallet, collectionName = 'Untitled Collection' } = req.body;
     const imageFile = req.file;
 
     if (!imageFile || !creatorWallet || !name || !description) {
+      console.log('Missing required fields or image file.');
       return res.status(400).json({ error: 'Missing required fields or image file.' });
     }
 
+    console.log('Uploading image to Pinata...');
     const imageUri = await uploadImageToPinata(imageFile);
+    console.log('Image uploaded to Pinata. URI:', imageUri);
 
     const metadata = {
       name,
@@ -132,7 +142,9 @@ app.post('/upload-nft', upload.single('image'), async (req, res) => {
       collection: collectionName
     };
 
+    console.log('Uploading metadata to Pinata...');
     const metadataUri = await uploadJsonToPinata(metadata);
+    console.log('Metadata uploaded to Pinata. URI:', metadataUri);
 
     const nftId = `nft_${Date.now()}`;
     const newNft = {
@@ -142,7 +154,9 @@ app.post('/upload-nft', upload.single('image'), async (req, res) => {
       minted: false
     };
 
+    console.log('Saving NFT to Firebase...');
     await db.ref(`collections/${creatorWallet}/${collectionName}/${nftId}`).set(newNft);
+    console.log('NFT saved to Firebase.');
 
     res.json({ success: true, metadataUri, nft: { id: nftId, ...newNft } });
   } catch (err) {

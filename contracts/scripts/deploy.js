@@ -1,13 +1,17 @@
 const hre = require("hardhat");
 
 async function main() {
-  const nadNFT = await hre.ethers.deployContract("NadNFT", ["0x56f519FE49D04a6641c50b61158D92F04c126A0d"], {});
+  const [deployer] = await hre.ethers.getSigners();
 
+  console.log("Deploying contracts with the account:", deployer.address);
+
+  const nadNFT = await hre.ethers.deployContract("NadNFT", [deployer.address], {});
   await nadNFT.waitForDeployment();
+  console.log(`NadNFT deployed to ${nadNFT.target}`);
 
-  console.log(
-    `NadNFT deployed to ${nadNFT.target}`
-  );
+  const nadMarketplace = await hre.ethers.deployContract("NadMarketplace", [deployer.address], {});
+  await nadMarketplace.waitForDeployment();
+  console.log(`NadMarketplace deployed to ${nadMarketplace.target}`);
 }
 
 main().catch((error) => {

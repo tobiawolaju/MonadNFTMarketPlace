@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 import { ethers } from "ethers";
+import TopNavbar from "./components/TopNavbar";
+import HomePage from "./pages/HomePage";
+import CreateNFTPage from "./pages/CreateNFTPage";
+import NFTDetailPage from "./pages/NFTDetailPage";
 
 const MONAD_TESTNET = {
   chainId: "0x279f", // 10143
@@ -790,71 +795,29 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>NadGarden NFT Marketplace</h1>
-        {!account ? (
-          <button onClick={connectWallet}>Connect Phantom Wallet</button>
-        ) : (
-          <>
-            <p>Connected: {formatAddress(account)}</p>
-            <p>
-              Balance:{" "}
-              {balanceLoading ? "Loading..." : `${balance} MON`}
-            </p>
-            <button onClick={disconnectWallet}>Disconnect</button>
-          </>
-        )}
+    <Router>
+      <div className="App">
+        <TopNavbar
+          connectWallet={connectWallet}
+          disconnectWallet={disconnectWallet}
+          account={account}
+          balance={balance}
+          balanceLoading={balanceLoading}
+        />
+        <nav>
+          <Link to="/">Home</Link> | <Link to="/create">Create NFT</Link>
+        </nav>
+        <Routes>
+          <Route path="/" element={<HomePage nfts={nfts} handleBuy={handleBuy} />} />
+          <Route path="/create" element={<CreateNFTPage handleMint={handleMint} setName={setName} setDescription={setDescription} setImage={setImage} name={name} description={description} />} />
+          <Route path="/nft/:id" element={<NFTDetailPage nfts={nfts} />} />
+        </Routes>
         {error && <p style={{ color: "red" }}>Error: {error}</p>}
         {chainId !== MONAD_TESTNET.chainId && account && (
           <p style={{ color: "orange" }}>Please switch to Monad Testnet</p>
         )}
-      </header>
-
-      <section className="mint-section">
-        <h2>Mint New NFT</h2>
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <input type="file" onChange={(e) => setImage(e.target.files[0])} />
-        <button onClick={handleMint}>Mint NFT</button>
-      </section>
-
-      <section className="nfts-section">
-        <h2>Available Collections</h2>
-        {nfts.map((collectionData) => (
-          <div key={collectionData.collectionName} className="collection-container">
-            <h3>Collection: {collectionData.collectionName}</h3>
-            <p>{collectionData.description || 'No description available.'}</p>
-            <p>Total NFTs: {collectionData.nfts.length}</p>
-            <div className="nft-list">
-              {collectionData.nfts.map((nft) => (
-                <div key={nft.id} className="nft-card">
-                  <h4>{nft.name}</h4>
-                  <p>{nft.description}</p>
-                  {nft.imageUrl && (
-                    <img src={nft.imageUrl} alt={nft.name} style={{ maxWidth: "200px" }} />
-                  )}
-                  <p>Creator: {nft.creatorWallet}</p>
-                  <button onClick={() => handleBuy({ ...nft, tokenId: 0 })}>
-                    Buy NFT
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </section>
-    </div>
+      </div>
+    </Router>
   );
 }
 
