@@ -17,7 +17,7 @@ const NFTs = ({ nfts, handleBuy }) => {
                   <div className="nft-card-content">
                     <h4 className="nft-card-title">{nft.name}</h4>
                     <p className="nft-card-description">{nft.description}</p>
-                    <p className="nft-card-creator">Creator: {nft.creatorWallet}</p>
+                    <p className="nft-card-creator">Creator: {nft.creator}</p>
                     {nft.price && <p className="nft-card-price">Price: {nft.price} MON</p>}
                   </div>
                 </Link>

@@ -22,6 +22,7 @@ const TopNavbar = ({ connectWallet, disconnectWallet, account, balance, balanceL
         <Link to="/" className="navbar-link">Monad Garden</Link>
       <div className="navbar-links">
         <Link to="/create" className="navbar-link">Mint</Link>
+        <Link to="/about" className="navbar-link">About</Link>
         {!account ? (
           <button className="navbar-button" onClick={connectWallet} disabled={isConnecting}>
             {isConnecting ? 'Loading...' : 'Connect'}

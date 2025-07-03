@@ -16,7 +16,7 @@ const NFTDetailPage = ({ nfts }) => {
       <div className="nft-detail-info">
         <h2>{nft.name}</h2>
         <p>{nft.description}</p>
-        <p>Creator: {nft.creatorWallet}</p>
+        <p>Creator: {nft.creator}</p>
         {nft.price && <p>Price: {nft.price} MON</p>}
       </div>
     </div>

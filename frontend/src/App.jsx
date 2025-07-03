@@ -6,6 +6,7 @@ import TopNavbar from "./components/TopNavbar";
 import HomePage from "./pages/HomePage";
 import CreateNFTPage from "./pages/CreateNFTPage";
 import NFTDetailPage from "./pages/NFTDetailPage";
+import AboutPage from "./pages/AboutPage";
 
 const MONAD_TESTNET = {
   chainId: "0x279f", // 10143
@@ -716,7 +717,14 @@ function App() {
     try {
       const response = await fetch('http://localhost:5000/collections');
       const data = await response.json();
-      setNfts(data);
+      const nftsWithGatewayUrls = data.map(collection => ({
+        ...collection,
+        nfts: collection.nfts.map(nft => ({
+          ...nft,
+          imageUrl: nft.image.replace('ipfs://', 'https://ipfs.io/ipfs/')
+        }))
+      }));
+      setNfts(nftsWithGatewayUrls);
     } catch (err) {
       console.error("Error loading NFTs", err);
     }
@@ -811,6 +819,7 @@ function App() {
           <Route path="/" element={<HomePage nfts={nfts} handleBuy={handleBuy} />} />
           <Route path="/create" element={<CreateNFTPage handleMint={handleMint} setName={setName} setDescription={setDescription} setImage={setImage} name={name} description={description} />} />
           <Route path="/nft/:id" element={<NFTDetailPage nfts={nfts} />} />
+          <Route path="/about" element={<AboutPage />} />
         </Routes>
         {error && <p style={{ color: "red" }}>Error: {error}</p>}
         {chainId !== MONAD_TESTNET.chainId && account && (
