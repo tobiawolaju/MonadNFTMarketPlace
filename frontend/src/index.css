@@ -3,66 +3,605 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  /* Define white theme variables inspired by OpenSea */
+  --background-color: #f8f9fa; /* Very light grey background */
+  --text-color: #212529; /* Dark grey for primary text */
+  --secondary-text-color: #6c757d; /* Lighter grey for secondary text */
+  --primary-color: #007bff; /* Blue for primary actions/links */
+  --primary-color-dark: #0056b3; /* Darker blue for hover states */
+  --accent-color: #28a745; /* Green for success/positive */
+  --card-background-color: #ffffff; /* White for cards */
+  --border-color: #e9ecef; /* Light grey for borders */
+  --shadow-color: rgba(0, 0, 0, 0.08); /* Subtle shadow */
+  --button-disabled-background: #e9ecef; /* Light grey for disabled buttons */
+  --error-color: #dc3545; /* Red for errors */
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  --border-radius-sm: 4px;
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* General styles for links and buttons */
+a {
+  font-weight: 500;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+a:hover {
+  color: var(--primary-color-dark);
 }
 
 button {
-  border-radius: 8px;
+  border-radius: var(--border-radius-sm);
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-md);
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--primary-color);
+  color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 button:hover {
-  border-color: #646cff;
+  background-color: var(--primary-color-dark);
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 4px auto var(--primary-color);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+input[type="text"],
+input[type="file"],
+input[type="number"] {
+  display: block;
+  width: 100%; /* Full width within parent */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  margin-bottom: var(--spacing-md); /* Consistent spacing below inputs */
+  padding: var(--spacing-sm) var(--spacing-md); /* More horizontal padding */
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+  background-color: var(--card-background-color);
+  color: var(--text-color);
+  font-size: var(--font-size-md);
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="file"]:focus,
+input[type="number"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* Subtle focus ring */
+}
+
+/* Component-specific styles */
+
+/* TopNavbar.jsx */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--card-background-color);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
+  color: var(--text-color);
+}
+
+.navbar-link {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-color);
+  text-decoration: none;
+  margin-right: var(--spacing-md);
+  transition: color 0.2s ease-in-out;
+}
+
+.navbar-link:hover {
+  color: var(--primary-color-dark);
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: background-color 0.2s ease-in-out;
+}
+
+.navbar-button:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.connected-wallet-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.wallet-address-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  position: relative;
+}
+
+.copy-icon {
+  cursor: pointer;
+}
+
+.copied-message {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--text-color);
+  color: white;
+  padding: 3px 8px;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.wallet-balance-display {
+  font-weight: bold;
+}
+
+.logout-icon {
+  cursor: pointer;
+  margin-left: var(--spacing-sm);
+}
+
+.navbar-button:disabled {
+  background-color: var(--button-disabled-background);
+  cursor: not-allowed;
+}
+
+/* App.jsx */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: var(--spacing-lg);
+}
+
+.App-header {
+  margin-bottom: var(--spacing-xl);
+  text-align: center;
+}
+
+.mint-section,
+.nfts-section {
+  margin-bottom: var(--spacing-xl);
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  background-color: var(--card-background-color);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.nft-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+  justify-content: center;
+}
+
+/* HomePage.jsx */
+.home-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .home-page {
+    flex-direction: row;
+    align-items: flex-start;
   }
-  a:hover {
-    color: #747bff;
+
+  .home-page-nfts {
+    flex: 3;
+    padding-right: var(--spacing-lg);
   }
-  button {
-    background-color: #f9f9f9;
+
+  .home-page-transactions {
+    flex: 1;
   }
+}
+
+@media (max-width: 767px) {
+  .home-page-transactions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 85vh;
+    background-color: var(--background-color);
+    border-top-left-radius: var(--border-radius-lg);
+    border-top-right-radius: var(--border-radius-lg);
+    box-shadow: 0 -5px 20px var(--shadow-color);
+    padding: var(--spacing-md);
+    transform: translateY(calc(85vh - 60px));
+    transition: transform 0.4s ease-in-out;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .home-page-transactions.sheet-open {
+    transform: translateY(0);
+  }
+}
+
+/* NFTs.jsx */
+/* NFTs.jsx */
+.nfts-container {
+  padding: var(--spacing-lg);
+}
+
+.section-header {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-color);
+  text-align: center;
+  font-weight: 700;
+}
+
+.nfts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-md);
+  justify-content: center;
+}
+
+.nft-collection-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.nft-collection-title {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-md);
+  text-align: left;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.nft-card {
+  background-color: var(--card-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.nft-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px var(--shadow-color);
+}
+
+.nft-card-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nft-card-content {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.nft-card-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--text-color);
+}
+
+.nft-card-description {
+  font-size: var(--font-size-sm);
+  color: var(--secondary-text-color);
+  margin: 0 0 var(--spacing-md) 0;
+  flex-grow: 1;
+}
+
+.nft-card-creator {
+  font-size: var(--font-size-sm);
+  color: var(--secondary-text-color);
+  margin-bottom: var(--spacing-md);
+}
+
+.nft-card-price {
+  font-size: var(--font-size-md);
+  font-weight: bold;
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-md);
+}
+
+.nft-card-button {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-md);
+  margin-top: auto;
+}
+
+/* Transactions.jsx */
+.transactions-container {
+  background-color: var(--card-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.transactions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.transactions-header h2 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.transactions-list {
+  list-style: none;
+  padding: 0;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: var(--font-size-md);
+  color: var(--secondary-text-color);
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.toggle-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.toggle-button:hover {
+  background-color: var(--primary-color-dark);
+}
+
+@media (min-width: 768px) {
+  .toggle-button {
+    display: none;
+  }
+}
+
+/* CreateNFTPage.jsx */
+.create-nft-page {
+  padding: var(--spacing-lg);
+  max-width: 600px;
+  margin: var(--spacing-lg) auto;
+  background-color: var(--card-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.create-nft-page h2 {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-color);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+.create-nft-page input {
+  margin-bottom: var(--spacing-md);
+}
+
+.create-nft-page button {
+  margin-top: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-md);
+  font-size: var(--font-size-lg);
+}
+
+.minted-nft-section {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.minted-nft-section h3 {
+  text-align: center;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-color);
+  font-size: var(--font-size-lg);
+}
+
+/* NFTDetailPage.jsx */
+.nft-detail-page {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-lg);
+  max-width: 900px;
+  margin: var(--spacing-lg) auto;
+  background-color: var(--card-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+@media (min-width: 768px) {
+  .nft-detail-page {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--spacing-lg);
+  }
+}
+
+.nft-detail-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: var(--border-radius);
+  object-fit: contain;
+  margin-bottom: var(--spacing-lg);
+}
+
+.nft-detail-info {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.nft-detail-info h2 {
+  font-size: var(--font-size-xxl);
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+  color: var(--primary-color);
+}
+
+.nft-detail-info p {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-sm);
+  color: var(--secondary-text-color);
+}
+
+.nft-detail-info p:last-of-type {
+  margin-bottom: 0;
+}
+
+.nft-detail-info strong {
+  color: var(--text-color);
+}
+
+.nft-detail-actions {
+  margin-top: var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.nft-detail-actions button {
+  flex: 1;
+  padding: var(--spacing-md);
+  font-size: var(--font-size-lg);
+}
+
+.nft-detail-actions button:disabled {
+  background-color: var(--button-disabled-background);
+  cursor: not-allowed;
+}
+
+.nft-detail-owner {
+  font-size: var(--font-size-sm);
+  color: var(--secondary-text-color);
+  margin-top: var(--spacing-sm);
+}
+
+.nft-detail-price {
+  font-size: var(--font-size-xl);
+  font-weight: bold;
+  color: var(--accent-color);
+  margin-top: var(--spacing-md);
+}
+
+.nft-detail-description {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.nft-detail-description h3 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-color);
+}
+
+.nft-detail-description p {
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+  color: var(--secondary-text-color);
+}
+
+.nft-detail-loading,
+.nft-detail-error {
+  text-align: center;
+  padding: var(--spacing-lg);
+  font-size: var(--font-size-lg);
+  color: var(--text-color);
+}
+
+.nft-detail-error {
+  color: var(--error-color);
 }

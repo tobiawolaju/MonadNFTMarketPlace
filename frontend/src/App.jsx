@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import "./App.css";
+
 import { ethers } from "ethers";
 import TopNavbar from "./components/TopNavbar";
 import HomePage from "./pages/HomePage";
