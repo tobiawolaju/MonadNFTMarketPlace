@@ -1,0 +1,861 @@
+import { useState, useEffect } from "react";
+import "./App.css";
+import { ethers } from "ethers";
+
+const MONAD_TESTNET = {
+  chainId: "0x279f", // 10143
+  chainName: "Monad Testnet",
+  nativeCurrency: {
+    name: "Monad",
+    symbol: "MON",
+    decimals: 18,
+  },
+  rpcUrls: ["https://testnet-rpc.monad.xyz"],
+  blockExplorerUrls: ["https://testnet.monadexplorer.com"],
+};
+
+// The contract ABI and address from your deployment
+const contractABI = [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "initialOwner",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721IncorrectOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC721InsufficientApproval",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "approver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidApprover",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidOperator",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "receiver",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidReceiver",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "ERC721InvalidSender",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ERC721NonexistentToken",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "Approval",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "ApprovalForAll",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_fromTokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_toTokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "BatchMetadataUpdate",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "MetadataUpdate",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "Transfer",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approve",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApproved",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "isApprovedForAll",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "uri",
+          "type": "string"
+        }
+      ],
+      "name": "mint",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownerOf",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "setApprovalForAll",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferWithRoyalty",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ];
+const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+const marketplaceWallet = import.meta.env.VITE_MARKETPLACE_WALLET;
+
+function App() {
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null);
+  const [nfts, setNfts] = useState([]);
+  const [account, setAccount] = useState('');
+  const [balance, setBalance] = useState('');
+  const [chainId, setChainId] = useState('');
+  const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
+  const [balanceLoading, setBalanceLoading] = useState(false);
+
+  const getProvider = () => window.phantom?.ethereum || null;
+
+  const checkIfWalletConnected = async () => {
+    const provider = getProvider();
+    if (!provider) return;
+    try {
+      const accounts = await provider.request({ method: "eth_accounts" });
+      if (accounts.length > 0) {
+        setAccount(accounts[0]);
+        await getBalance(accounts[0]);
+        await getCurrentChain();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const connectWallet = async () => {
+    const provider = getProvider();
+    if (!provider) {
+      setError("Phantom not found. Install Phantom extension.");
+      return;
+    }
+
+    try {
+      const accounts = await provider.request({ method: "eth_requestAccounts" });
+      setAccount(accounts[0]);
+      await switchToMonadNetwork();
+      await getBalance(accounts[0]);
+      await getCurrentChain();
+      setError("");
+    } catch (err) {
+      setError(err.message || "Failed to connect wallet.");
+    }
+  };
+
+  const switchToMonadNetwork = async () => {
+    const provider = getProvider();
+    if (!provider) return;
+
+    try {
+      await provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: MONAD_TESTNET.chainId }],
+      });
+    } catch (switchError) {
+      if (switchError.code === 4902) {
+        await provider.request({
+          method: "wallet_addEthereumChain",
+          params: [MONAD_TESTNET],
+        });
+      } else {
+        throw switchError;
+      }
+    }
+  };
+
+  const getBalance = async (addr) => {
+    const provider = getProvider();
+    if (!provider) return;
+    setBalanceLoading(true);
+    try {
+      const balHex = await provider.request({
+        method: "eth_getBalance",
+        params: [addr, "latest"],
+      });
+      const balEth = parseFloat(ethers.formatEther(balHex));
+      setBalance(balEth.toFixed(4));
+    } catch (err) {
+      console.error("Failed to fetch balance", err);
+    } finally {
+      setBalanceLoading(false);
+    }
+  };
+
+  const getCurrentChain = async () => {
+    const provider = getProvider();
+    if (!provider) return;
+    const id = await provider.request({ method: "eth_chainId" });
+    setChainId(id);
+  };
+
+  const disconnectWallet = () => {
+    setAccount('');
+    setBalance('');
+    setChainId('');
+    setError('');
+  };
+
+  const fetchNfts = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/collections');
+      const data = await response.json();
+      setNfts(data);
+    } catch (err) {
+      console.error("Error loading NFTs", err);
+    }
+  };
+
+  const handleMint = async () => {
+    if (!name || !description || !image || !account) {
+      alert("Fill all fields and connect wallet");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("image", image);
+    formData.append("creatorWallet", account);
+
+    try {
+      const uploadRes = await fetch('http://localhost:5000/upload-nft', {
+        method: 'POST',
+        body: formData,
+      });
+      const uploadData = await uploadRes.json();
+
+      if (uploadData.success) {
+        const tokenURI = uploadData.metadataUri;
+        const provider = new ethers.BrowserProvider(getProvider());
+        const signer = await provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        const tx = await contract.mint(account, tokenURI, {
+          value: ethers.parseEther("0.05"),
+        });
+
+        await tx.wait();
+        alert("NFT Minted!");
+        fetchNfts();
+      } else {
+        alert("Error uploading metadata.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Mint failed.");
+    }
+  };
+
+  const handleBuy = async (nft) => {
+    if (!account) {
+      alert("Connect wallet first");
+      return;
+    }
+
+    try {
+      const provider = new ethers.BrowserProvider(getProvider());
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+      const tx = await contract.transferWithRoyalty(account, nft.tokenId, {
+        value: ethers.parseEther("0.05"),
+      });
+
+      await tx.wait();
+      alert("Purchase complete");
+      fetchNfts();
+    } catch (err) {
+      console.error(err);
+      alert("Buy failed");
+    }
+  };
+
+  const formatAddress = (addr) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+
+  useEffect(() => {
+    fetchNfts();
+    checkIfWalletConnected();
+  }, []);
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1>NadGarden NFT Marketplace</h1>
+        {!account ? (
+          <button onClick={connectWallet}>Connect Phantom Wallet</button>
+        ) : (
+          <>
+            <p>Connected: {formatAddress(account)}</p>
+            <p>
+              Balance:{" "}
+              {balanceLoading ? "Loading..." : `${balance} MON`}
+            </p>
+            <button onClick={disconnectWallet}>Disconnect</button>
+          </>
+        )}
+        {error && <p style={{ color: "red" }}>Error: {error}</p>}
+        {chainId !== MONAD_TESTNET.chainId && account && (
+          <p style={{ color: "orange" }}>Please switch to Monad Testnet</p>
+        )}
+      </header>
+
+      <section className="mint-section">
+        <h2>Mint New NFT</h2>
+        <input
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+        <button onClick={handleMint}>Mint NFT</button>
+      </section>
+
+      <section className="nfts-section">
+        <h2>Available Collections</h2>
+        {nfts.map((collectionData) => (
+          <div key={collectionData.collectionName} className="collection-container">
+            <h3>Collection: {collectionData.collectionName}</h3>
+            <p>{collectionData.description || 'No description available.'}</p>
+            <p>Total NFTs: {collectionData.nfts.length}</p>
+            <div className="nft-list">
+              {collectionData.nfts.map((nft) => (
+                <div key={nft.id} className="nft-card">
+                  <h4>{nft.name}</h4>
+                  <p>{nft.description}</p>
+                  {nft.imageUrl && (
+                    <img src={nft.imageUrl} alt={nft.name} style={{ maxWidth: "200px" }} />
+                  )}
+                  <p>Creator: {nft.creatorWallet}</p>
+                  <button onClick={() => handleBuy({ ...nft, tokenId: 0 })}>
+                    Buy NFT
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
+    </div>
+  );
+}
+
+export default App;
