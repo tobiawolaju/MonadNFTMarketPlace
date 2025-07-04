@@ -1078,9 +1078,9 @@ function App() {
         const tokenURI = uploadData.metadataUri;
         const provider = new ethers.BrowserProvider(getProvider());
       const signer = await provider.getSigner();
-      const nadMarketplaceContract = new ethers.Contract(marketplaceWallet, nadMarketplaceABI, signer);
+      const nadNFTContract = new ethers.Contract(contractAddress, nadNFTABI, signer);
 
-        const tx = await contract.mint(account, tokenURI, {
+        const tx = await nadNFTContract.mint(account, tokenURI, {
           value: ethers.parseEther("0.05"),
         });
 
