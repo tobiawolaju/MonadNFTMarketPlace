@@ -4,10 +4,14 @@ import Transactions from '../components/Transactions';
 
 
 const HomePage = ({ nfts, handleBuy }) => {
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [sheetState, setSheetState] = useState('hidden'); // 'hidden', 'partial', 'full'
 
   const toggleSheet = () => {
-    setIsSheetOpen(!isSheetOpen);
+    setSheetState((prevState) => {
+      if (prevState === 'hidden') return 'partial';
+      if (prevState === 'partial') return 'full';
+      return 'hidden';
+    });
   };
 
   return (
@@ -15,8 +19,8 @@ const HomePage = ({ nfts, handleBuy }) => {
       <div className="home-page-nfts">
         <NFTs nfts={nfts} handleBuy={handleBuy} />
       </div>
-      <div className={`home-page-transactions ${isSheetOpen ? 'sheet-open' : ''}`}>
-        <Transactions onToggle={toggleSheet} isSheetOpen={isSheetOpen} />
+      <div className={`home-page-transactions sheet-${sheetState}`}>
+        <Transactions onToggle={toggleSheet} sheetState={sheetState} />
       </div>
     </div>
   );

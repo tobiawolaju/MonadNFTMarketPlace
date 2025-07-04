@@ -162,6 +162,15 @@ input[type="number"]:focus {
   gap: var(--spacing-sm);
   background-color: var(--primary-color);
   color: white;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+}
+
+.connected-wallet-button span {
+  max-width: 100px; /* Limit width of address text */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .wallet-address-container {
@@ -202,7 +211,75 @@ input[type="number"]:focus {
   cursor: not-allowed;
 }
 
-/* App.jsx */
+/* Wallet Popup Styles */
+.wallet-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.wallet-popup-content {
+  background-color: var(--card-background-color);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 16px var(--shadow-color);
+  text-align: center;
+  width: 300px; /* Fixed width */
+  height: 250px; /* Fixed height for square dimension */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.wallet-popup-content h3 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-color);
+}
+
+.wallet-popup-content p {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-sm);
+  color: var(--secondary-text-color);
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  word-break: break-all; /* Break long words */
+}
+
+.wallet-popup-content .copy-icon {
+  cursor: pointer;
+  color: var(--primary-color);
+}
+
+.wallet-popup-content .copied-message {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--text-color);
+  color: white;
+  padding: 3px 8px;
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.wallet-popup-content button {
+  margin-top: var(--spacing-md);
+  width: 100%; /* Make button fill width */
+  padding: var(--spacing-sm) var(--spacing-lg);
+}
 .App {
   display: flex;
   flex-direction: column;
@@ -262,30 +339,8 @@ input[type="number"]:focus {
   }
 }
 
-@media (max-width: 767px) {
-  .home-page-transactions {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 85vh;
-    background-color: var(--background-color);
-    border-top-left-radius: var(--border-radius-lg);
-    border-top-right-radius: var(--border-radius-lg);
-    box-shadow: 0 -5px 20px var(--shadow-color);
-    padding: var(--spacing-md);
-    transform: translateY(calc(85vh - 60px));
-    transition: transform 0.4s ease-in-out;
-    z-index: 100;
-    overflow-y: auto;
-  }
 
-  .home-page-transactions.sheet-open {
-    transform: translateY(0);
-  }
-}
 
-/* NFTs.jsx */
 /* NFTs.jsx */
 .nfts-container {
   padding: var(--spacing-lg);
@@ -384,67 +439,96 @@ input[type="number"]:focus {
   margin-top: auto;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Transactions.jsx */
-.transactions-container {
-  background-color: var(--card-background-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-lg);
-  box-shadow: 0 4px 8px var(--shadow-color);
+.sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  overflow-y: auto;
+  transition: height 0.3s ease, transform 0.3s ease;
+  z-index: 999;
+}
+
+.sheet-grabber {
+  width: 40px;
+  height: 5px;
+  background-color: var(--border-color);
+  border-radius: 3px;
+  margin: 0 auto var(--spacing-sm);
+}
+
+
+.sheet.collapsed {
+  height: 50vh;
+}
+
+.sheet.expanded {
+  height: 100vh;
 }
 
 .transactions-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-md);
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background: rgba(255, 255, 255, 0.95);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-.transactions-header h2 {
-  margin: 0;
-  font-size: var(--font-size-xl);
-  color: var(--text-color);
-  font-weight: 600;
+.toggle-button {
+  background-color: #222;
+  color: #fff;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .transactions-list {
   list-style: none;
-  padding: 0;
+  padding: 16px;
+  margin: 0;
 }
 
 .transaction-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-sm) 0;
-  border-bottom: 1px solid var(--border-color);
-  font-size: var(--font-size-md);
-  color: var(--secondary-text-color);
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #f9f9f9;
+  border-radius: 8px;
 }
 
-.transaction-item:last-child {
-  border-bottom: none;
-}
 
-.toggle-button {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-sm);
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
 
-.toggle-button:hover {
-  background-color: var(--primary-color-dark);
-}
 
-@media (min-width: 768px) {
-  .toggle-button {
-    display: none;
-  }
-}
+
+
+
+
+
+
+
 
 /* CreateNFTPage.jsx */
 .create-nft-page {

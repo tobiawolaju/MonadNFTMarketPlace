@@ -812,9 +812,7 @@ function App() {
           balance={balance}
           balanceLoading={balanceLoading}
         />
-        <nav>
-          <Link to="/">Home</Link> | <Link to="/create">Create NFT</Link>
-        </nav>
+       
         <Routes>
           <Route path="/" element={<HomePage nfts={nfts} handleBuy={handleBuy} />} />
           <Route path="/create" element={<CreateNFTPage handleMint={handleMint} setName={setName} setDescription={setDescription} setImage={setImage} name={name} description={description} />} />
