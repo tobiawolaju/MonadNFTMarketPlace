@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiLogOut } from 'react-icons/fi';
 import { FaRegCopy } from 'react-icons/fa';
-import './TopNavbar.css';
+
 
 const TopNavbar = ({ connectWallet, disconnectWallet, account, balance, balanceLoading, isConnecting }) => {
   const [copied, setCopied] = useState(false);

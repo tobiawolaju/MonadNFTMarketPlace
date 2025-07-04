@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import './NFTDetailPage.css'
+
 
 const NFTDetailPage = ({ nfts }) => {
   const { id } = useParams();

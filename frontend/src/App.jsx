@@ -804,7 +804,7 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
+      <div>
         <TopNavbar
           connectWallet={connectWallet}
           disconnectWallet={disconnectWallet}
@@ -819,9 +819,9 @@ function App() {
           <Route path="/nft/:id" element={<NFTDetailPage nfts={nfts} />} />
           <Route path="/about" element={<AboutPage />} />
         </Routes>
-        {error && <p style={{ color: "red" }}>Error: {error}</p>}
+        {error && <p className="error-message">Error: {error}</p>}
         {chainId !== MONAD_TESTNET.chainId && account && (
-          <p style={{ color: "orange" }}>Please switch to Monad Testnet</p>
+          <p className="warning-message">Please switch to Monad Testnet</p>
         )}
       </div>
     </Router>

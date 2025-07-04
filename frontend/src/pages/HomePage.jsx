@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import NFTs from '../components/NFTs';
 import Transactions from '../components/Transactions';
-import './HomePage.css';
+
 
 const HomePage = ({ nfts, handleBuy }) => {
  const [sheetState, setSheetState] = useState('collapsed');
