@@ -935,6 +935,7 @@ function App() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
+  const [listingPrice, setListingPrice] = useState('');
   const [nfts, setNfts] = useState([]);
   const [account, setAccount] = useState('');
   const [balance, setBalance] = useState('');
@@ -1039,7 +1040,7 @@ function App() {
 
       const nftsWithPrices = await Promise.all(data.flatMap(collection => 
         collection.nfts.map(async nft => {
-          const priceRes = await fetch(`https://monadnftmarketplaceserver.onrender.com/listing-price/${contractAddress}/${nft.tokenId}`);
+          const priceRes = await fetch(`https://monadnftmarketplaceserver.onrender.com/listing-price/${nft.contractAddress}/${nft.id}`);
           const priceData = await priceRes.json();
           return {
             ...nft,
@@ -1055,7 +1056,7 @@ function App() {
     }
   };
 
-  const handleMint = async () => {
+  const handleMint = async (listingPrice) => {
     if (!name || !description || !image || !account) {
       alert("Fill all fields and connect wallet");
       return;
@@ -1084,9 +1085,34 @@ function App() {
           value: ethers.parseEther("0.05"),
         });
 
-        await tx.wait();
-        alert("NFT Minted!");
-        fetchNfts();
+        const receipt = await tx.wait();
+        const transferEvent = receipt.logs.find(log => nadNFTContract.interface.parseLog(log)?.name === "Transfer");
+        const mintedTokenId = transferEvent.args.tokenId.toString();
+
+        // Update the formData with tokenId and contractAddress
+        formData.append("tokenId", mintedTokenId);
+        formData.append("contractAddress", contractAddress);
+
+        // Re-send the formData with tokenId and contractAddress
+        const updateRes = await fetch('https://monadnftmarketplaceserver.onrender.com/upload-nft', {
+          method: 'POST',
+          body: formData,
+        });
+        const updateData = await updateRes.json();
+
+        if (updateData.success) {
+          // List the NFT on the marketplace
+          const nadMarketplaceContract = new ethers.Contract(marketplaceWallet, nadMarketplaceABI, signer);
+          const parsedListingPrice = ethers.parseEther(listingPrice.toString());
+
+          const listTx = await nadMarketplaceContract.listNFT(contractAddress, mintedTokenId, parsedListingPrice);
+          await listTx.wait();
+
+          alert("NFT Minted and Listed!");
+          fetchNfts();
+        } else {
+          alert("Error updating NFT data after mint.");
+        }
       } else {
         alert("Error uploading metadata.");
       }
@@ -1140,7 +1166,7 @@ function App() {
        
         <Routes>
           <Route path="/" element={<HomePage nfts={nfts} handleBuy={handleBuy} />} />
-          <Route path="/create" element={<CreateNFTPage handleMint={handleMint} setName={setName} setDescription={setDescription} setImage={setImage} name={name} description={description} />} />
+          <Route path="/create" element={<CreateNFTPage handleMint={handleMint} setName={setName} setDescription={setDescription} setImage={setImage} name={name} description={description} listingPrice={listingPrice} setListingPrice={setListingPrice} />} />
           <Route path="/nft/:id" element={<NFTDetailPage nfts={nfts} />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/profile" element={<ProfilePage nfts={nfts} account={account} balance={balance} balanceLoading={balanceLoading} />} />

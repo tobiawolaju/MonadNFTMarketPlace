@@ -444,10 +444,10 @@ app.post('/upload-nft', upload.single('image'), async (req, res) => {
     console.log('Request body:', req.body);
     console.log('Request file:', req.file);
 
-    const { name, description, creatorWallet, collectionName = 'Untitled Collection' } = req.body;
+    const { name, description, creatorWallet, collectionName = 'Untitled Collection', tokenId, contractAddress } = req.body;
     const imageFile = req.file;
 
-    if (!imageFile || !creatorWallet || !name || !description) {
+    if (!imageFile || !creatorWallet || !name || !description || !tokenId || !contractAddress) {
       console.log('Missing required fields or image file.');
       return res.status(400).json({ error: 'Missing required fields or image file.' });
     }
@@ -469,22 +469,36 @@ app.post('/upload-nft', upload.single('image'), async (req, res) => {
     console.log('Metadata uploaded to Pinata. URI:
 ', metadataUri);
 
-    const nftId = `nft_${Date.now()}`;
     const newNft = {
       ...metadata,
       metadata_uri: metadataUri,
       timestamp: Date.now(),
-      minted: false
+      minted: true, // Set to true as it's minted on chain
+      tokenId: tokenId, // Store the actual tokenId
+      contractAddress: contractAddress // Store the contract address
     };
 
     console.log('Saving NFT to Firebase...');
-    await db.ref(`collections/${creatorWallet}/${collectionName}/${nftId}`).set(newNft);
+    await db.ref(`collections/${creatorWallet}/${collectionName}/${tokenId}`).set(newNft); // Use tokenId as key
     console.log('NFT saved to Firebase.');
 
-    res.json({ success: true, metadataUri, nft: { id: nftId, ...newNft } });
+    res.json({ success: true, metadataUri, nft: { id: tokenId, ...newNft } });
   } catch (err) {
     console.error('Upload failed:', err);
     res.status(500).json({ error: 'Failed to upload NFT' });
+  }
+});
+
+// Server start
+const PORT = process.env.PORT || 5000;
+app.get('/listing-price/:nftContract/:tokenId', async (req, res) => {
+  try {
+    const { nftContract, tokenId } = req.params;
+    const listing = await marketplaceContract.listings(nftContract, tokenId);
+    res.json({ price: listing.price.toString(), active: listing.active });
+  } catch (err) {
+    console.error('Error fetching listing price:', err);
+    res.status(500).json({ error: 'Failed to fetch listing price' });
   }
 });
 
