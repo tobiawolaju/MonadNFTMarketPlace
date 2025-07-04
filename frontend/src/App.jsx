@@ -715,7 +715,7 @@ function App() {
 
   const fetchNfts = async () => {
     try {
-      const response = await fetch('http://localhost:5000/collections');
+      const response = await fetch('https://monadnftmarketplaceserver.onrender.com/collections');
       const data = await response.json();
       const nftsWithGatewayUrls = data.map(collection => ({
         ...collection,
@@ -743,7 +743,7 @@ function App() {
     formData.append("creatorWallet", account);
 
     try {
-      const uploadRes = await fetch('http://localhost:5000/upload-nft', {
+      const uploadRes = await fetch('https://monadnftmarketplaceserver.onrender.com/upload-nft', {
         method: 'POST',
         body: formData,
       });
