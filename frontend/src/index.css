@@ -113,6 +113,8 @@ input[type="number"]:focus {
 
 /* TopNavbar.jsx */
 .navbar {
+  position: sticky;
+  top:0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -477,7 +479,7 @@ input[type="number"]:focus {
 
 
 .sheet.collapsed {
-  height: 50vh;
+  height: 30vh;
 }
 
 .sheet.expanded {
