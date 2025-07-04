@@ -7,7 +7,6 @@ import HomePage from "./pages/HomePage";
 import CreateNFTPage from "./pages/CreateNFTPage";
 import NFTDetailPage from "./pages/NFTDetailPage";
 import AboutPage from "./pages/AboutPage";
-import ProfilePage from "./pages/ProfilePage";
 
 const MONAD_TESTNET = {
   chainId: "0x279f", // 10143
@@ -22,7 +21,7 @@ const MONAD_TESTNET = {
 };
 
 // The contract ABI and address from your deployment
-const nadNFTABI = [
+const contractABI = [
     {
       "inputs": [
         {
@@ -610,324 +609,6 @@ const nadNFTABI = [
       "type": "function"
     }
   ];
-const nadMarketplaceABI = [
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "initialOwner",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        }
-      ],
-      "name": "OwnableInvalidOwner",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
-      "name": "OwnableUnauthorizedAccount",
-      "type": "error"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "nftContract",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "seller",
-          "type": "address"
-        }
-      ],
-      "name": "ItemCanceled",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "nftContract",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "price",
-          "type": "uint256"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "seller",
-          "type": "address"
-        }
-      ],
-      "name": "ItemListed",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "nftContract",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "price",
-          "type": "uint256"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "seller",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "buyer",
-          "type": "address"
-        }
-      ],
-      "name": "ItemSold",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "previousOwner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "OwnershipTransferred",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_nftContract",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "buyNFT",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_nftContract",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "cancelListing",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_nftContract",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_tokenId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_price",
-          "type": "uint256"
-        }
-      ],
-      "name": "listNFT",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "listingCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "listings",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "nftContract",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "price",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "seller",
-          "type": "address"
-        },
-        {
-          "internalType": "bool",
-          "name": "active",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_nftContract",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_tokenId",
-          "type": "uint256"
-        }
-      ],
-      "name": "withdrawERC721",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "withdrawEther",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }
-  ];
 const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
 const marketplaceWallet = import.meta.env.VITE_MARKETPLACE_WALLET;
 
@@ -1036,20 +717,14 @@ function App() {
     try {
       const response = await fetch('https://monadnftmarketplaceserver.onrender.com/collections');
       const data = await response.json();
-
-      const nftsWithPrices = await Promise.all(data.flatMap(collection => 
-        collection.nfts.map(async nft => {
-          const priceRes = await fetch(`https://monadnftmarketplaceserver.onrender.com/listing-price/${contractAddress}/${nft.tokenId}`);
-          const priceData = await priceRes.json();
-          return {
-            ...nft,
-            imageUrl: nft.image.replace('ipfs://', 'https://ipfs.io/ipfs/'),
-            price: priceData.price, // Add the price here
-            active: priceData.active // Add active status
-          };
-        })
-      ));
-      setNfts(nftsWithPrices);
+      const nftsWithGatewayUrls = data.map(collection => ({
+        ...collection,
+        nfts: collection.nfts.map(nft => ({
+          ...nft,
+          imageUrl: nft.image.replace('ipfs://', 'https://ipfs.io/ipfs/')
+        }))
+      }));
+      setNfts(nftsWithGatewayUrls);
     } catch (err) {
       console.error("Error loading NFTs", err);
     }
@@ -1077,8 +752,8 @@ function App() {
       if (uploadData.success) {
         const tokenURI = uploadData.metadataUri;
         const provider = new ethers.BrowserProvider(getProvider());
-      const signer = await provider.getSigner();
-      const nadMarketplaceContract = new ethers.Contract(marketplaceWallet, nadMarketplaceABI, signer);
+        const signer = await provider.getSigner();
+        const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
         const tx = await contract.mint(account, tokenURI, {
           value: ethers.parseEther("0.05"),
@@ -1105,10 +780,10 @@ function App() {
     try {
       const provider = new ethers.BrowserProvider(getProvider());
       const signer = await provider.getSigner();
-      const nadMarketplaceContract = new ethers.Contract(marketplaceWallet, nadMarketplaceABI, signer);
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-      const tx = await nadMarketplaceContract.buyNFT(nft.nftContract, nft.tokenId, {
-        value: ethers.parseEther(nft.listingPrice.toString()),
+      const tx = await contract.transferWithRoyalty(account, nft.tokenId, {
+        value: ethers.parseEther("0.05"),
       });
 
       await tx.wait();
@@ -1143,7 +818,6 @@ function App() {
           <Route path="/create" element={<CreateNFTPage handleMint={handleMint} setName={setName} setDescription={setDescription} setImage={setImage} name={name} description={description} />} />
           <Route path="/nft/:id" element={<NFTDetailPage nfts={nfts} />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/profile" element={<ProfilePage nfts={nfts} account={account} balance={balance} balanceLoading={balanceLoading} />} />
         </Routes>
         {error && <p className="error-message">Error: {error}</p>}
         {chainId !== MONAD_TESTNET.chainId && account && (
