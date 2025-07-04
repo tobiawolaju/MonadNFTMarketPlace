@@ -17,6 +17,7 @@
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",
     "ethers": "^6.0.0",
+    "jazzicon": "^2.0.0",
     "path-browserify": "^1.0.1",
     "process": "^0.11.10",
     "react": "^19.1.0",

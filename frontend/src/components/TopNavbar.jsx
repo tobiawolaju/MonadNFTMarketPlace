@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FiLogOut } from 'react-icons/fi';
-import { FaRegCopy } from 'react-icons/fa';
+import { FaRegUserCircle, FaRegCopy } from 'react-icons/fa';
 import './TopNavbar.css';
 
 const TopNavbar = ({ connectWallet, disconnectWallet, account, balance, balanceLoading, isConnecting }) => {
   const [copied, setCopied] = useState(false);
   const [showWalletPopup, setShowWalletPopup] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const formatAddress = (addr) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 
@@ -23,6 +25,14 @@ const TopNavbar = ({ connectWallet, disconnectWallet, account, balance, balanceL
     setShowWalletPopup(false);
   };
 
+  const handleProfileClick = () => {
+    if (location.pathname === '/profile') {
+      setShowWalletPopup(true);
+    } else {
+      navigate('/profile');
+    }
+  };
+
   return (
     <>
       <nav className="navbar">
@@ -32,9 +42,9 @@ const TopNavbar = ({ connectWallet, disconnectWallet, account, balance, balanceL
 
         <div className="nav-links">
           <Link to="/" className="navbar-link">Collect</Link>
-       
           <Link to="/create" className="navbar-link">Create</Link>
-         </div>
+          <Link to="/profile" className="navbar-link">Profile</Link>
+        </div>
 
         <div className="wallet-area">
           {!account ? (
@@ -42,9 +52,8 @@ const TopNavbar = ({ connectWallet, disconnectWallet, account, balance, balanceL
               {isConnecting ? 'Connecting...' : 'Connect Wallet'}
             </button>
           ) : (
-            <button className="navbar-button connected-wallet-button" onClick={() => setShowWalletPopup(true)}>
-              <span>{formatAddress(account)}</span>
-              <FiLogOut className="logout-icon" />
+            <button className={`navbar-button ${account ? 'icon-button' : ''}`} onClick={handleProfileClick}>
+              {location.pathname === '/profile' ? <FiLogOut /> : <FaRegUserCircle />}
             </button>
           )}
         </div>
@@ -62,7 +71,7 @@ const TopNavbar = ({ connectWallet, disconnectWallet, account, balance, balanceL
             <p>
               <strong>Balance:</strong> {balanceLoading ? 'Loading...' : `${balance} MON`}
             </p>
-            <button onClick={handleDisconnect}>Disconnect</button>
+            <button onClick={handleDisconnect} className="btn-primary">Disconnect</button>
           </div>
         </div>
       )}
