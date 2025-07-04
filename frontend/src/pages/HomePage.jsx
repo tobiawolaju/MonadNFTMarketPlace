@@ -1,25 +1,21 @@
 import React, { useState } from 'react';
 import NFTs from '../components/NFTs';
 import Transactions from '../components/Transactions';
-
+import './HomePage.css';
 
 const HomePage = ({ nfts, handleBuy }) => {
-  const [sheetState, setSheetState] = useState('hidden'); // 'hidden', 'partial', 'full'
+ const [sheetState, setSheetState] = useState('collapsed');
 
-  const toggleSheet = () => {
-    setSheetState((prevState) => {
-      if (prevState === 'hidden') return 'partial';
-      if (prevState === 'partial') return 'full';
-      return 'hidden';
-    });
-  };
+const toggleSheet = () => {
+  setSheetState(prev => (prev === 'collapsed' ? 'full' : 'collapsed'));
+};
 
   return (
     <div className="home-page">
       <div className="home-page-nfts">
         <NFTs nfts={nfts} handleBuy={handleBuy} />
       </div>
-      <div className={`home-page-transactions sheet-${sheetState}`}>
+      <div className="home-page-transactions">
         <Transactions onToggle={toggleSheet} sheetState={sheetState} />
       </div>
     </div>

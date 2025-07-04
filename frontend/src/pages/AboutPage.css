@@ -1,0 +1,36 @@
+
+/* AboutPage.jsx */
+.about-page {
+  padding: var(--spacing-lg);
+  max-width: 800px;
+  margin: var(--spacing-lg) auto;
+  background-color: var(--card-background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.about-page h2 {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-color);
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+}
+
+.about-page h3 {
+  margin-top: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-color);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+.about-page p {
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+  color: var(--secondary-text-color);
+  margin-bottom: var(--spacing-md);
+}
+
+
