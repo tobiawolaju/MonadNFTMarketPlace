@@ -84,7 +84,7 @@ const CreateNFTPage = ({
         onChange={(e) => setListingPrice(e.target.value)}
       />
 
-      <button onClick={() => handleMint(listingPrice)}>Mint NFT</button>
+      <button onClick={() => handleMint(listingPrice)} className="btn-primary">Mint NFT</button>
     </div>
   );
 };

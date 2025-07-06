@@ -1,12 +1,38 @@
 .nft-collection {
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-xl);
 }
+
 .collection-title {
-  font-size: 20px;
-  margin-bottom: 10px;
+  font-family: 'Chewy', cursive;
+  font-size: 1.8rem;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-dark);
+  text-align: left;
+  padding-left: var(--spacing-md);
 }
+
 .nft-grid {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--spacing-lg);
+  justify-items: center;
+  padding: 0 var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+  .nft-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .collection-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nft-grid {
+    grid-template-columns: 1fr;
+    padding: 0 var(--spacing-sm);
+  }
 }

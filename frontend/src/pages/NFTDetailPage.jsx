@@ -23,7 +23,7 @@ const NFTDetailPage = ({ nfts }) => {
   return (
     <>
       <div className="nft-detail-page">
-        <div className="nft-detail-card">
+        <div className="nft-detail-card card">
           <img src={nft.imageUrl} alt={nft.name} className="nft-detail-image" />
           <div className="nft-detail-info">
             <h2 className="nft-detail-name">{nft.name}</h2>

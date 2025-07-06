@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { BrowserProvider } from 'ethers';
 import { useNavigate } from 'react-router-dom';
 import NFTCollection from '../components/NFTCollection';
 import './ProfilePage.css';
@@ -104,7 +104,7 @@ const ProfilePage = ({ account, balance, balanceLoading }) => {
     const fetchAvatar = async () => {
       if (account && window.ethereum) {
         try {
-          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          const provider = new BrowserProvider(window.ethereum);
           const ensName = await provider.lookupAddress(account);
           if (ensName) {
             const resolver = await provider.getResolver(ensName);
@@ -146,8 +146,8 @@ const ProfilePage = ({ account, balance, balanceLoading }) => {
       )}
 
       <div className="bottom-buttons">
-        <button className="nav-btn" onClick={() => navigate('/')}>Explore</button>
-        <button className="nav-btn" onClick={() => navigate('/create')}>Create NFT</button>
+        <button className="nav-btn btn-primary" onClick={() => navigate('/')}>Explore</button>
+        <button className="nav-btn btn-primary" onClick={() => navigate('/create')}>Create NFT</button>
       </div>
     </div>
   );
