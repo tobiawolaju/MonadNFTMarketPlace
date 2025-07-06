@@ -1,44 +1,52 @@
-
-/* CreateNFTPage.jsx */
 .create-nft-page {
-  padding: var(--spacing-lg);
-  max-width: 600px;
-  margin: var(--spacing-lg) auto;
-  background-color: var(--card-background-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  box-shadow: 0 4px 8px var(--shadow-color);
+  font-family: 'Chewy', cursive;
+  background-color: white;
+  padding: 40px 20px 100px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  text-align: center;
 }
 
 .create-nft-page h2 {
-  text-align: center;
-  margin-bottom: var(--spacing-lg);
-  color: var(--primary-color); /* Headings in vibrant purple */
-  font-size: var(--font-size-xl);
-  font-weight: 600;
+  font-size: 36px;
+  color: #AB9FF1;
+  margin-bottom: 30px;
 }
 
-.create-nft-page input {
-  margin-bottom: var(--spacing-md);
+.create-nft-page input[type="text"],
+.create-nft-page input[type="number"],
+.create-nft-page input[type="file"] {
+  width: 80vw;
+  max-width: 400px;
+  padding: 15px;
+  margin: 10px auto;
+  display: block;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background: #F5F5F5;
+  font-family: inherit;
+}
+
+.create-nft-page input[type="file"] {
+  padding: 10px;
+  border: none;
+  background: transparent;
 }
 
 .create-nft-page button {
-  margin-top: var(--spacing-md);
-  width: 100%;
-  padding: var(--spacing-md);
-  font-size: var(--font-size-lg);
+  background-color: #FA97FF;
+  color: black;
+  padding: 15px 40px;
+  font-size: 18px;
+  font-family: 'Chewy', cursive;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.3s ease;
 }
 
-.minted-nft-section {
-  margin-top: var(--spacing-lg);
-  padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--border-color);
-  text-align: center;
-}
-
-.minted-nft-section h3 {
-  text-align: center;
-  margin-bottom: var(--spacing-md);
-  color: var(--text-color);
-  font-size: var(--font-size-lg);
+.create-nft-page button:hover {
+  background-color: #e084e8;
 }

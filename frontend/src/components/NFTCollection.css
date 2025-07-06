@@ -1,0 +1,12 @@
+.nft-collection {
+  margin-bottom: 30px;
+}
+.collection-title {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.nft-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}

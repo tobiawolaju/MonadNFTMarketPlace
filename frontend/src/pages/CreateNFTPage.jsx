@@ -1,5 +1,5 @@
 import React from 'react';
-import './CreateNFTPage.css'
+import './CreateNFTPage.css'; 
 
 const CreateNFTPage = ({ handleMint, setName, setDescription, setImage, name, description, listingPrice, setListingPrice }) => {
   return (

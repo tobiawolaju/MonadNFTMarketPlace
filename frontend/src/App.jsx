@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage";
 import CreateNFTPage from "./pages/CreateNFTPage";
 import NFTDetailPage from "./pages/NFTDetailPage";
 import AboutPage from "./pages/AboutPage";
+import ProfilePage from"./pages/ProfilePage";
 
 const MONAD_TESTNET = {
   chainId: "0x279f", // 10143
@@ -818,6 +819,7 @@ function App() {
           <Route path="/create" element={<CreateNFTPage handleMint={handleMint} setName={setName} setDescription={setDescription} setImage={setImage} name={name} description={description} />} />
           <Route path="/nft/:id" element={<NFTDetailPage nfts={nfts} />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/profile" element={<ProfilePage nfts={nfts} account={account} balance={balance} balanceLoading={balanceLoading} />} />
         </Routes>
         {error && <p className="error-message">Error: {error}</p>}
         {chainId !== MONAD_TESTNET.chainId && account && (
