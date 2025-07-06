@@ -1,4 +1,5 @@
 import React from 'react';
+import './Marketplace.css';
 import TrendingCards from './TrendingCards';
 
 const Trending = ({ nfts, handleBuy }) => {

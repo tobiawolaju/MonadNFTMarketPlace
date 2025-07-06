@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Trending from '../components/Trending';
-import Latest from '../components/Latest';
 
 
 const HomePage = ({ nfts, handleBuy }) => {
@@ -15,9 +14,6 @@ const toggleSheet = () => {
       <div className="home-page-nfts">
         <Trending nfts={nfts} handleBuy={handleBuy} />
       </div>
-      <div className="home-page-transactions">
-         <Latest nfts={nfts} handleBuy={handleBuy} />
-       </div>
     </div>
   );
 };
