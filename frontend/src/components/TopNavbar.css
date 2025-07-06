@@ -19,14 +19,14 @@
   align-items: center;
 }
 
-.navbar-center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: auto; /* or a fixed width like 200px if needed */
+.navbar-center p {
+  font-family: 'Chewy', cursive;
+  font-size: 24px;
+  color: #d95eff;
+  margin: 0;
+  letter-spacing: 1px;
+  user-select: none;
+  cursor: default;
 }
 
 .nav-link {

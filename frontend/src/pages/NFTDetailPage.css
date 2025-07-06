@@ -1,0 +1,103 @@
+.nft-detail-page {
+  min-height: 100vh;
+  padding: 40px 20px 100px; /* extra space for buttons */
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: 'Chewy', cursive;
+}
+
+.nft-detail-card {
+  max-width: 800px;
+  width: 100%;
+  background: #f8f8f8;
+  border-radius: 20px;
+  box-shadow: 0 6px 30px rgba(250, 151, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeIn 0.4s ease;
+}
+
+.nft-detail-image {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.nft-detail-info {
+  padding: 24px;
+  text-align: left;
+}
+
+.nft-detail-name {
+  font-size: 28px;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.nft-detail-desc {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.nft-detail-meta {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.nft-detail-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fa97ff;
+}
+
+/* Sticky bottom buttons */
+.bottom-buttons {
+  position: fixed;
+  bottom: 0px;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  justify-content: space-evenly;
+  z-index: 1000;background-color: rgba(255, 255, 255, 0.507); /* semi-transparent white */
+  backdrop-filter: blur(10px); /* adds the blur effect */
+  -webkit-backdrop-filter: blur(10px); /* for Safari support */
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+}
+
+.nav-btn {
+  background-color: #FA97FF;
+  color: rgb(0, 0, 0);
+  padding: 18px 28px;
+  border: none;
+  cursor: pointer;
+  font-weight: lighter;
+  font-size: 16px;
+  height: 50px;
+  border-radius: 50px;
+  transition: background 0.3s;
+  font-family: 'Chewy', cursive;
+}
+
+.nav-btn:hover {
+  background-color: #e084e8;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
